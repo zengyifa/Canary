@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.telephony.gsm.SmsManager;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +25,7 @@ public class MainActivity extends Activity {
     {
         switch(v.getId()) {
             case R.id.main:
+
                 sendSMS("7852182716", "hello test");
                 break;
         }
@@ -94,7 +93,7 @@ public class MainActivity extends Activity {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -102,7 +101,7 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    @Override
+   @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -113,5 +112,5 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+*/
 }
