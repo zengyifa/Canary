@@ -122,6 +122,7 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
                    // String locationString;
                     hasClicked = true;
                     runnable.run();
+
                     }
                   //  locationString = "My latitude is " + mCurrentLocation.getLatitude() +
                     //            " and my longitude is " + mCurrentLocation.getLongitude();
