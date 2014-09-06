@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.os.Handler;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -50,6 +51,14 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
     boolean updatesRequested;
     boolean hasClicked;
 
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable(){
+        @Override
+        public void run() {
+            sendSMSOnTime();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -82,21 +91,18 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
             }
             updatesRequested = true; //assume app opened so updates are requested
             hasClicked = false;
-    }
 
+    }
     //Called when activity is opened (so when the app is opened)
     @Override
     protected void onStart() {
         super.onStart();
         // Connect the client.
         mGoogleApiClient.connect();
-        while(hasClicked == true && updatesRequested == true){
-            String locationString;
-            locationString = "My latitude is " + mCurrentLocation.getLatitude() +
-                    " and my longitude is " + mCurrentLocation.getLongitude();
-            Log.v("Location", locationString);
-            // sendSMS("7852182716", locationString);
-        }
+
+
+
+
     }
 
     @Override
@@ -111,11 +117,12 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
                 if(mCurrentLocation != null && updatesRequested) {
                    // String locationString;
                     hasClicked = true;
+                    runnable.run();
+                    }
                   //  locationString = "My latitude is " + mCurrentLocation.getLatitude() +
                     //            " and my longitude is " + mCurrentLocation.getLongitude();
                    // Log.v("Location", locationString);
                    // sendSMS("7852182716", locationString);
-                }
                 break;
             case R.id.button_textoff:
                 updatesRequested = !updatesRequested;
@@ -127,6 +134,16 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
 
                 break;
         }
+    }
+    private void sendSMSOnTime(){
+        String phoneNumber = "7852182716";
+        String message = "My latitude is " + mCurrentLocation.getLatitude() +
+                " and my longitude is " + mCurrentLocation.getLongitude();
+        if(updatesRequested == true && hasClicked == true) {
+            sendSMS(phoneNumber, message);
+            Log.v("Location", "sent location");
+        }
+        handler.postDelayed(runnable,10000);
     }
 
     private void sendSMS(String phoneNumber, String message)
