@@ -28,5 +28,6 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/textviewid"
+        android:visibility="gone"
         android:onClick="onClick"/>
 </RelativeLayout>

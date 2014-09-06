@@ -114,6 +114,10 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
     {
         switch(v.getId()) {
             case R.id.main:
+                Button mButton = (Button) v.findViewById(R.id.button_textoff);
+                if(mButton.getVisibility() == View.GONE){
+                    mButton.setVisibility(View.VISIBLE);
+                }
                 if(mCurrentLocation != null && updatesRequested) {
                    // String locationString;
                     hasClicked = true;
@@ -126,11 +130,11 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
                 break;
             case R.id.button_textoff:
                 updatesRequested = !updatesRequested;
-                Button mButton = (Button) v.findViewById(R.id.button_textoff);
+                Button mButton1 = (Button) v.findViewById(R.id.button_textoff);
                 String buttonText = "on";
                 if(updatesRequested == true)
                     buttonText = "off";
-                mButton.setText("Turn " + buttonText + " texts");
+                mButton1.setText("Turn " + buttonText + " texts");
 
                 break;
         }
