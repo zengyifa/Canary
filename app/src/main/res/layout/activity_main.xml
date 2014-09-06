@@ -12,7 +12,7 @@
     tools:context="com.canary.app.MainActivity">
 
     <TextView
-        android:id="@string/textviewid"
+        android:id="@+id/textviewid"
         android:text="@string/tapanywhere"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,11 +21,12 @@
         />
     
     <Button
-        android:id="@string/buttonid"
+        android:id="@+id/button_textoff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text= "@string/buttontext"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@string/textviewid"/>
+        android:layout_below="@id/textviewid"
+        android:onClick="onClick"/>
 </RelativeLayout>
