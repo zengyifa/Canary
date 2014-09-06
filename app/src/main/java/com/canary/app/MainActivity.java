@@ -17,18 +17,18 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         RelativeLayout Rl;
-        Rl = (RelativeLayout)findViewById(R.id.main);
-        Rl.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                sendSMS("7852182716", "hello test");
-                return true;
-            }
-        });
 
-
+     }
+    public void onClick(View v)
+    {
+        switch(v.getId())
+        {
+            case R.id.main:
+                    sendSMS("7852182716", "hello test");
+                    break;
+        }
     }
+
     private void sendSMS(String phoneNumber, String message)
     {
         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
