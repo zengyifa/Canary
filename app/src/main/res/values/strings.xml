@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Canary</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="tapanywhere">Tap Anywhere to Send a SMS!</string>
     <string name="action_settings">Settings</string>
 
 </resources>
