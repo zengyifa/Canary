@@ -19,14 +19,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
      }
-    public void onClick(View v)
+
+    @Override
+    public boolean onTouchEvent(MotionEvent Event)
     {
-        switch(v.getId())
-        {
-            case R.id.main:
-                    sendSMS("7852182716", "hello test");
-                    break;
-        }
+        sendSMS("7852182716", "hello test");
+        return true;
+
     }
 
     private void sendSMS(String phoneNumber, String message)
