@@ -1,32 +1,109 @@
 package com.canary.app;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+public class MainActivity extends Activity implements  GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+    //Global constants for location updates
+    // Milliseconds per second
+    private static final int MILLISECONDS_PER_SECOND = 1000;
+    // Update frequency in seconds
+    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    // Update frequency in milliseconds
+    private static final long UPDATE_INTERVAL =
+            MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
+    // The fastest update frequency, in seconds
+    private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+    // A fast frequency ceiling in milliseconds
+    private static final long FASTEST_INTERVAL =
+            MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
+
+
+    //Global Variables to keep track of location
+    private GoogleApiClient mGoogleApiClient;
+    LocationListener mLocationListener;
+    Location mCurrentLocation;
+    // Define an object that holds accuracy and frequency parameters
+    LocationRequest mLocationRequest;
+
+    boolean updatesRequested;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+            mLocationRequest = LocationRequest.create();
+            mLocationRequest.setPriority(
+                   LocationRequest.PRIORITY_HIGH_ACCURACY);
+            // Set the update interval to 5 seconds
+            mLocationRequest.setInterval(UPDATE_INTERVAL);
+            // Set the fastest update interval to 1 second
+            mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+            mGoogleApiClient.connect();
+            int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+            if(ConnectionResult.SUCCESS == resultCode)
+                Log.d("Location updates", "Google play services is available");
+            else{
+                Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+                        resultCode,
+                        this,
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                if (errorDialog != null) {
+                   Log.d("Location failure", errorDialog.toString());
+                }
+            }
+            updatesRequested = true; //assume app opened so updates are requested
+    }
 
-     }
+    //Called when activity is opened (so when the app is opened)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Connect the client.
+        mGoogleApiClient.connect();
+    }
 
-
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
     public void onClick(View v)
     {
         switch(v.getId()) {
             case R.id.main:
-
-                sendSMS("7852182716", "hello test");
+                if(mCurrentLocation != null) {
+                    String locationString;
+                    locationString = "My location is " + mCurrentLocation.toString();
+                    sendSMS("7852182716", locationString);
+                }
                 break;
         }
     }
@@ -93,6 +170,40 @@ public class MainActivity extends Activity {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.v("Disconnected", "disconnected");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // Report to the UI that the location was updated
+        String msg = "Updated Location: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        mCurrentLocation = location;
+    }
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000); // Update location every second
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+
+        Log.v("Connected", "connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
