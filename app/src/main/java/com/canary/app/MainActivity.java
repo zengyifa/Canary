@@ -28,7 +28,7 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
     // Milliseconds per second
     private static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    public static final int UPDATE_INTERVAL_IN_SECONDS = 15;
     // Update frequency in milliseconds
     private static final long UPDATE_INTERVAL =
             MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
@@ -101,7 +101,9 @@ public class MainActivity extends Activity implements  GoogleApiClient.Connectio
             case R.id.main:
                 if(mCurrentLocation != null) {
                     String locationString;
-                    locationString = "My location is " + mCurrentLocation.toString();
+
+                    locationString = "My latitude is " + mCurrentLocation.getLatitude() +
+                                " and my longitude is " + mCurrentLocation.getLongitude();
                     sendSMS("7852182716", locationString);
                 }
                 break;
